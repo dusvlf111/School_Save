@@ -1,0 +1,21 @@
+set linenumbers
+
+set indicator
+
+set atblanks
+
+set autoindent
+
+set saveonexit
+
+set tabsize number
+
+set tabstospaces
+
+set nonewlines
+
+set minibar
+
+set brackets " "')>]} "
+
+set whitespace "»·"
