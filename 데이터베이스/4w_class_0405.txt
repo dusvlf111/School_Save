@@ -1,0 +1,153 @@
+
+단일 함수		하나의 행당 하나의 결과
+그룹 함수 	여러개의 행당 하나의 결과
+
+
+
+그룹 	- count		-- 모든 행의 수
+	- sum		-- 행의 합
+	- avg		-- 평균
+	- max		-- 최대값
+	- min		-- 최소
+	- stdenv		-- 표준편차
+	- varlance 	-- 분산
+
+
+
+
+
+
+sum - select sum(sal) from emp; 
+
+
+avg - select avg(sal) from emp; 
+						-- avg
+							null 값은 그룹함수에서 제외됨
+	select avg(comm) from emp;
+	select avg(NVL(comm, 0)) from emp;
+
+
+max, min
+ 
+	예) 가장 낮은 급여와 높은 급여
+	select max(sal), min(sal)
+	from emp;
+
+	문자 및 날짜에도 적용
+	select max(ename), min(ename),
+	max(hiredate), min(hiredate)
+	from emp;
+	
+	select max(hiredate) - min(hiredate)
+	from emp;
+
+
+그룹 함수 와 단순 컬럼				-- 그룹, 단순칼럼 
+							두개 같이 사용안함
+	
+	급여 최대
+	select max(sal)
+	from emp;
+	
+	이름과 함께 출력
+	select max(sal), ename
+	from emp;
+
+	
+count						-- count	
+							조건 만족하는 행의 개수
+
+
+	ex1) 커미션을 받는 사원 수		
+
+		select count(comm)
+		from emp;
+	
+	ex2)
+		select count(*), count(comm)	
+						-- count
+							조건을 만족하는 행의 개수 구함
+ 							null 은 그룹에서 제외
+	예) 직업 개수
+
+		select count(job)
+		from emp;
+
+ 	
+	총 14건이 검색됨
+ 	실제 직업 종류는 5개 임
+
+	조건을 만족하는 행의 개수 구함
+
+ 	distinct 																		   
+		select count(distinct job)		   
+						-- distinct	
+ 							중복되지 않는 값을 구하기 위해 사용
+							특정한 컬럼이 아닌 행의 수를 셀 때 사용
+	
+ 	예) 입사 연도별 인원수
+		select count(*) total,
+		count(decode(to_char(hiredate, 'YYYY', 2010, 1)) "2010",
+		.~~
+		.~~
+		.~~
+	
+group by 					
+						-- group by 
+							그룹 함수와 일반컬럼 같이 사용시 오류 발생
+						       	반드시 그룹한것에 대해서만 가능
+	
+		select deptno, max(sal)
+		from emp;
+
+	부서별 최대값, 평균 등
+	- 부서 번호로 그룹
+		select deptno
+		from emp
+		group by deptno;
+
+	- 부서별 평균 급여
+		select deptno, avg(sal)
+		from emp
+		group by deptno
+
+	ex)
+		select ename, LEVEL, empno, mgr
+		from emp
+		start with ename = 'KING'
+		connect by prior empno = mgr;
+
+	 having	
+							--- having
+								where 절에 그룹함수의 조건을 기술하면 오류
+
+	- having 절에 조건기술
+		select deptno, AVG(sal)
+		from emp
+		group by deptno
+		having avg(sal) >=2000;
+
+
+							--- rollup, cube
+								보고서? 같은 형태로
+
+	- rollup
+		select deptno, GROUPING(deptno),
+		job, GROUPING(job),
+		count(*), round(avg(sal) * 12) annsal
+		from emp
+		group by ROLLUP(deptno, job);
+
+	
+#시험은 손코딩	
+
+
+select
+    job,
+    count(job) as count_job,
+  
+from EMP
+group by job
+order by round(avg(mgr))desc
+;
+
